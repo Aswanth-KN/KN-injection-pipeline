@@ -209,6 +209,26 @@
         </div>
     </div>
 
+    <div class="panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <label style="margin:0;">Recent Saved Tickets (PostgreSQL)</label>
+            <button type="button" onclick="loadHistory()"
+                style="padding:0.35rem 0.75rem; font-size:0.8rem;">Refresh</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Category</th>
+                    <th>Urgency</th>
+                    <th>Summary</th>
+                </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+        </table>
+    </div>
+
     <script>
         async function runPipeline() {
             const rawText = document.getElementById("rawText").value.trim();
@@ -295,6 +315,23 @@
       `;
             document.getElementById("structuredResult").style.display = "block";
         }
+
+        async function loadHistory() {
+            const res = await fetch("/tickets?limit=10");
+            const tickets = await res.json();
+            const tbody = document.getElementById("historyBody");
+            tbody.innerHTML = tickets.map(t => `
+        <tr>
+          <td>#${t.id}</td>
+          <td>${t.customer_email || "—"}</td>
+          <td><span class="badge">${t.category}</span></td>
+          <td><span class="badge">${t.urgency}</span></td>
+          <td>${t.summary}</td>
+        </tr>
+      `).join("");
+        }
+
+        window.addEventListener("DOMContentLoaded", loadHistory);
     </script>
 </body>
 

@@ -4,7 +4,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel, Field
 from app.schemas.events import PipelineEvent
 from app.schemas.extraction import ExtractedTicket
-from app.services.db_writer import save_extracted_ticket
+from app.services.db_writer import get_recent_tickets, save_extracted_ticket
 from app.services.llm_extractor import stream_and_extract
 
 app = FastAPI(title="AI Structured Data Ingestion Pipeline")
@@ -55,3 +55,25 @@ async def ingest_ticket(request: IngestionRequest) -> StreamingResponse:
         ),
         media_type="text/event-stream",
     )
+
+@app.get("/health")
+async def health_check() -> dict[str, str]:
+    await get_recent_tickets(limit=1)
+    return {"status": "ok", "database": "connected"}
+
+
+@app.get("/tickets")
+async def list_tickets(limit: int = 10) -> list[dict]:
+    records = await get_recent_tickets(limit=limit)
+    return [
+        {
+            "id": r.id,
+            "customer_email": r.customer_email,
+            "category": r.category,
+            "urgency": r.urgency,
+            "summary": r.summary,
+            "line_items": r.line_items,
+            "created_at": r.created_at.isoformat() if r.created_at else None,
+        }
+        for r in records
+    ]

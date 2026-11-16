@@ -1,0 +1,57 @@
+[
+  {
+    "id": "case_01_outage_with_revenue_loss",
+    "raw_text": "Urgent! My name is sarah@globex.io. Our production API is returning 500 errors and we lost $400 on 4 Enterprise Seats today.",
+    "expected": {
+      "customer_email": "sarah@globex.io",
+      "category": "bug_report",
+      "urgency": "high",
+      "min_line_items": 1,
+      "expected_total_amount": 400.0
+    }
+  },
+  {
+    "id": "case_02_duplicate_billing",
+    "raw_text": "Hi, this is john@acme.com. You billed me $150 twice for 2 Pro Licenses! Fix this today.",
+    "expected": {
+      "customer_email": "john@acme.com",
+      "category": "billing",
+      "urgency": "high",
+      "min_line_items": 1,
+      "expected_total_amount": 300.0
+    }
+  },
+  {
+    "id": "case_03_missing_email_cancellation",
+    "raw_text": "Please cancel our Team Workspace plan immediately before next month's renewal.",
+    "expected": {
+      "customer_email": null,
+      "category": "cancellation",
+      "urgency": "medium",
+      "min_line_items": 0,
+      "expected_total_amount": 0.0
+    }
+  },
+  {
+    "id": "case_04_feature_request_low_urgency",
+    "raw_text": "Hey team, dev@startup.io here. Would love to see dark mode support in the analytics dashboard whenever you get around to it.",
+    "expected": {
+      "customer_email": "dev@startup.io",
+      "category": "feature_request",
+      "urgency": "low",
+      "min_line_items": 0,
+      "expected_total_amount": 0.0
+    }
+  },
+  {
+    "id": "case_05_multi_item_invoice",
+    "raw_text": "Billing contact: finance@initech.com. Please generate an invoice for 3 Dedicated Nodes at $200 each and 1 Support Add-on at $50.",
+    "expected": {
+      "customer_email": "finance@initech.com",
+      "category": "billing",
+      "urgency": "low",
+      "min_line_items": 2,
+      "expected_total_amount": 650.0
+    }
+  }
+]
